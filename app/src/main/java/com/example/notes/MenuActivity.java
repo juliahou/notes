@@ -55,8 +55,9 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
-                intent.putExtra("number", myDataset.size());
-                startActivity(intent);
+                intent.putExtra("number", position);
+                intent.putExtra("title", myDataset.get(position));
+                startActivityForResult(intent, position);
             }
         });
         recyclerView.setAdapter(adapter);
@@ -67,9 +68,9 @@ public class MenuActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MenuActivity.this, MainActivity.class);
                 intent.putExtra("number", myDataset.size());
-                myDataset.add("" + myDataset.size());
+                myDataset.add("Note" + myDataset.size());
                 adapter.notifyItemRangeChanged(0, myDataset.size());
-                startActivity(intent);
+                startActivityForResult(intent, myDataset.size()-1);
             }
         });
     }
@@ -78,6 +79,14 @@ public class MenuActivity extends AppCompatActivity {
     protected void onPause() {
         save("titles.txt");
         super.onPause();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            myDataset.set(requestCode, data.getStringExtra("title"));
+            adapter.notifyItemChanged(requestCode);
+        }
     }
 
     private void save(String fileName) {

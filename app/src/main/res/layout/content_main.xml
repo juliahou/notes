@@ -9,10 +9,18 @@
     tools:showIn="@layout/activity_main">
 
     <EditText
-        android:id="@+id/edit_text"
+        android:id="@+id/title"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="50dp"
+        android:hint="Title"
+        ></EditText>
+
+    <EditText
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="540dp"
         android:gravity="top"
-        android:hint="Enter text here..."/>
+        android:hint="Enter text here..."
+        app:layout_constraintTop_toBottomOf="@+id/title" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

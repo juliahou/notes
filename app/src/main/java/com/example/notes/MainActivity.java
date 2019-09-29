@@ -1,5 +1,6 @@
 package com.example.notes;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -33,10 +34,18 @@ public class MainActivity extends AppCompatActivity {
         int num = intent.getIntExtra("number", 0);
         final String fileName = "meow" + num + ".txt";
 
-        EditText editText = findViewById(R.id.edit_text);
+        String title = intent.getStringExtra("title");
+        if (title == null || title.length() == 0) {
+            title = "Note" + num;
+        }
+
+        final EditText titleView = findViewById(R.id.title);
+        titleView.setText(title);
+
+        EditText editText = findViewById(R.id.content);
         if (fileExists(fileName)) {
             String content = open(fileName);
-            editText.setText(num + "\n\n" + content);
+            editText.setText(content);
         }
 
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -44,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 save(fileName);
+                Intent intent1 = new Intent();
+                intent1.putExtra("title", titleView.getText().toString());
+                setResult(Activity.RESULT_OK, intent1);
                 finish();
             }
         });
@@ -51,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        Intent intent = new Intent();
+        setResult(Activity.RESULT_CANCELED, intent);
         finish();
         super.onPause();
     }
@@ -81,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             OutputStreamWriter out =
                     new OutputStreamWriter(openFileOutput(fileName, 0));
-            EditText editText = findViewById(R.id.edit_text);
+            EditText editText = findViewById(R.id.content);
             out.write(editText.getText().toString());
             out.close();
             Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT).show();
